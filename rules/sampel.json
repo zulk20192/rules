@@ -1,0 +1,50 @@
+{
+  "version": 1,
+  "rules": [
+    {
+      "domain_suffix": [
+        "doubleclick.net",
+        "googlesyndication.com",
+        "googleadservices.com",
+        "adservice.google.com",
+        "adservice.google.co.id",
+        "ads.youtube.com",
+        "adcolony.com",
+        "adform.net",
+        "adnxs.com",
+        "adsrvr.org",
+        "advertising.com",
+        "adroll.com",
+        "appsflyer.com",
+        "criteo.com",
+        "moatads.com",
+        "tracking.miui.com",
+        "unityads.unity3d.com",
+        "vungle.com",
+        "zedo.com",
+        "mgid.com",
+        "taboola.com",
+        "outbrain.com",
+        "shopeeads.com"
+      ]
+    },
+    {
+      "domain_keyword": [
+        "adservice",
+        "adserver",
+        "adsystem",
+        "advert",
+        "tracking",
+        "analytics"
+      ]
+    },
+    {
+      "domain": [
+        "ad.api.moji.com",
+        "ad.tiktok.com",
+        "ads.twitter.com",
+        "app-measurement.com"
+      ]
+    }
+  ]
+}
