@@ -9,56 +9,50 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: write   # Diperlukan untuk push ke repo
+
     steps:
     - name: Checkout repo
       uses: actions/checkout@v4
       with:
         persist-credentials: true
-
-    - name: Install dependencies
-      run: sudo apt update
+        fetch-depth: 1   # ⚡ cepat: clone lebih kecil
 
     - name: Get latest Sing-box download URL
       id: geturl
       run: |
         URL=$(curl -s https://api.github.com/repos/SagerNet/sing-box/releases/latest \
-          | grep browser_download_url \
           | grep linux-amd64.tar.gz \
           | cut -d '"' -f 4)
         echo "URL=$URL" >> $GITHUB_OUTPUT
 
-    - name: Download Sing-box
-      run: wget "${{ steps.geturl.outputs.URL }}"
-
-    - name: Extract Sing-box
+    - name: Download & Extract Sing-box (FAST)
       run: |
-        tar -xvf *.tar.gz
+        wget -q "${{ steps.geturl.outputs.URL }}"
+        tar -xf *.tar.gz --wildcards "*/sing-box"
         DIR=$(find . -type d -name "sing-box*" | head -n 1)
         echo "DIR=$DIR" >> $GITHUB_ENV
 
-    - name: Compile all JSON to SRS in root
+    - name: Compile all JSON in rules/ to SRS in root
       run: |
-        for FILE in *.json; do
+        for FILE in rules/*.json; do
           NAME=$(basename "$FILE" .json)
           echo "Compile: $FILE → $NAME.srs"
           "${{ env.DIR }}/sing-box" rule-set compile "$FILE" -o "$NAME.srs"
         done
-        ls -lah
+        ls -lah *.srs
 
-    - name: Upload all .srs as artifact
+    - name: Upload all SRS files
       uses: actions/upload-artifact@v4
       with:
         name: hasil-singbox
         path: "*.srs"
-        retention-days: 7
 
-    - name: Commit & push SRS to repo
+    - name: Commit and push SRS
       run: |
         git config --global user.email "github-actions@github.com"
         git config --global user.name "GitHub Actions"
-
         git add *.srs
-        git commit -m "Update SRS file(s) [auto]"
+        git commit -m "Auto-update SRS (rules/ folder)" || echo "No changes to commit"
         git push
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
