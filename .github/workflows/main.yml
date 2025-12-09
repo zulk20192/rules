@@ -38,7 +38,7 @@ jobs:
     - name: Convert JSON to SRS
       run: |
         mkdir -p output
-        "$DIR/sing-box" rule-set compile rules/ads.json -o output/ads.srs
+        "$DIR/sing-box" rule-set compile ads.json -o output/ads.srs
         ls -lah output
 
     - name: Upload output
